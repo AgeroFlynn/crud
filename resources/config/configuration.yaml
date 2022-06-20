@@ -1,0 +1,21 @@
+version:
+  build:
+  desc:
+web:
+  readTimeout:
+  writeTimeout:
+  idleTimeout:
+  shutdownTimeout:
+  APIHost:
+  debugHost:
+auth:
+  keysFolder:
+  activeKID:
+db:
+  user:
+  password:
+  host:
+  name:
+  maxIdleCons:
+  maxOpenCons:
+  disableTLS:

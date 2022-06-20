@@ -17,7 +17,6 @@ func init() {
 }
 
 func main() {
-
 	flag.Parse()
 	var b strings.Builder
 

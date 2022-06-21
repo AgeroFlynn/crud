@@ -40,7 +40,7 @@ func main() {
 			continue
 		}
 
-		// I like always having a traceid present in the logs.
+		// Set default trace id
 		traceID := "00000000-0000-0000-0000-000000000000"
 		if v, ok := m["traceid"]; ok {
 			traceID = fmt.Sprintf("%v", v)

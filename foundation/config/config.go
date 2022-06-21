@@ -35,17 +35,27 @@ type Config struct {
 	}
 }
 
-func NewConfigFromFile() error {
-	data, err := os.ReadFile("resources/config/configuration.yaml")
-	if err != nil {
-		return fmt.Errorf("error with reading configuration file: %w", err)
+const description = "My example service for the k8s environment"
+
+func NewConfigFromFile(build string) (Config, error) {
+	var confPath string
+	switch build {
+	case "develop":
+		confPath = "resources/config/develop.yaml"
+	default:
+		confPath = "resources/config/production.yaml"
 	}
 
-	const prefix = "APP"
+	data, err := os.ReadFile(confPath)
+	if err != nil {
+		return Config{}, fmt.Errorf("error with reading configuration file: %w", err)
+	}
+
+	const prefix = "PHONE-DICT"
 	var cfg = Config{
 		Version: conf.Version{
-			Build: "build",
-			Desc:  "copyright information here",
+			Build: build,
+			Desc:  description,
 		},
 	}
 
@@ -53,11 +63,10 @@ func NewConfigFromFile() error {
 	if err != nil {
 		if errors.Is(err, conf.ErrHelpWanted) {
 			fmt.Println(help)
-			return nil
+			return Config{}, nil
 		}
-		return fmt.Errorf("parsing config: %w", err)
+		return Config{}, fmt.Errorf("parsing config: %w", err)
 	}
 
-	fmt.Println(conf.String(&cfg))
-	return nil
+	return cfg, nil
 }

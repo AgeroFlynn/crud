@@ -1,0 +1,33 @@
+# Build the Go Binary.
+FROM golang:1.18 as build_phone-dict-api
+ENV CGO_ENABLED 0
+ARG BUILD_REF
+
+# Copy the source code into the container.
+COPY . /service
+
+# Build the admin binary.
+#WORKDIR /service/app/tooling/sales-admin
+#RUN go build -ldflags "-X main.build=${BUILD_REF}"
+
+# Build the services binary.
+WORKDIR /service/app/services/phone-dict-api
+RUN go build -ldflags "-X main.build=${BUILD_REF}"
+
+
+# Run the Go Binary in Alpine.
+FROM alpine:3.14
+ARG BUILD_DATE
+ARG BUILD_REF
+#COPY --from=build_phone-dict-api --chown=sales:sales /service/zarf/keys/. /service/zarf/keys/.
+#COPY --from=build_phone-dict-api --chown=sales:sales /service/app/tooling/sales-admin/sales-admin /service/sales-admin
+COPY --from=build_phone-dict-api --chown=sales:sales /service/app/services/phone-dict-api/phone-dict-api /service/phone-dict-api
+WORKDIR /service
+CMD ["./phone-dict-api"]
+
+LABEL org.opencontainers.image.created="${BUILD_DATE}" \
+      org.opencontainers.image.title="My example service for the k8s environment" \
+      org.opencontainers.image.authors="Alexander Blackman <agero.flynn@gmail.com>" \
+      org.opencontainers.image.source="https://github.com/AgeroFlynn/service/app/crud" \
+      org.opencontainers.image.revision="${BUILD_REF}" \
+      org.opencontainers.image.vendor="Agero Flynn"

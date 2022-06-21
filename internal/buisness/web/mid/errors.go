@@ -2,8 +2,8 @@ package mid
 
 import (
 	"context"
-	"github.com/AgeroFlynn/service/business/sys/validate"
-	"github.com/AgeroFlynn/service/foundation/web"
+	"github.com/AgeroFlynn/crud/foundation/web"
+	"github.com/AgeroFlynn/crud/internal/buisness/sys/validate"
 	"go.uber.org/zap"
 	"net/http"
 )

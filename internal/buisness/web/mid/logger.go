@@ -2,7 +2,7 @@ package mid
 
 import (
 	"context"
-	"github.com/AgeroFlynn/service/foundation/web"
+	"github.com/AgeroFlynn/crud/foundation/web"
 	"go.uber.org/zap"
 	"net/http"
 	"time"

@@ -53,6 +53,8 @@ func run(log *zap.SugaredLogger) error {
 	// =========================================================================
 	// Configuration
 
+	expvar.NewString("build").Set(build)
+
 	cfg, err := config.NewConfigFromFile(build)
 	if err != nil {
 		return fmt.Errorf("parsing config: %w", err)
@@ -69,8 +71,6 @@ func run(log *zap.SugaredLogger) error {
 		return fmt.Errorf("generating config for output: %w", err)
 	}
 	log.Infow("startup", "config", out)
-
-	expvar.NewString("build").Set(build)
 
 	// =========================================================================
 	// Start API Service

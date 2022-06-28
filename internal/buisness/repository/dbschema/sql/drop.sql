@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS phone_dict;
+DROP TABLE IF EXISTS users;

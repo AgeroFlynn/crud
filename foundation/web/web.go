@@ -50,7 +50,7 @@ func (a *App) SignalShutdown() {
 
 // Handle sets a handler function for a given HTTP method and path pair
 // to the application server mux.
-func (a *App) Handle(group string, path string, handler Handler, mw ...Middleware) {
+func (a *App) Handle(method string, group string, path string, handler Handler, mw ...Middleware) {
 
 	// First wrap handler specific middleware around this handler.
 	handler = wrapMiddleware(mw, handler)
@@ -82,5 +82,5 @@ func (a *App) Handle(group string, path string, handler Handler, mw ...Middlewar
 		finalPath = "/" + group + path
 	}
 
-	a.mux.HandleFunc(finalPath, h)
+	a.mux.HandleFunc(finalPath, h).Methods(method)
 }

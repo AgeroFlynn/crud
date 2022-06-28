@@ -11,7 +11,7 @@ import "github.com/go-pg/pg/v10"
 
 // Set of error variables for CRUD operations.
 var (
-	ErrNotFound              = errors.New("not found")
+	ErrNotFound              = errors.New("pg: no rows in result set")
 	ErrInvalidID             = errors.New("ID is not in its proper form")
 	ErrAuthenticationFailure = errors.New("authentication failed")
 	ErrForbidden             = errors.New("attempted action is not allowed")

@@ -2,8 +2,8 @@ package mid
 
 import (
 	"context"
-	"github.com/AgeroFlynn/crud/foundation/web"
 	"github.com/AgeroFlynn/crud/internal/buisness/sys/validate"
+	web2 "github.com/AgeroFlynn/crud/internal/foundation/web"
 	"go.uber.org/zap"
 	"net/http"
 )
@@ -11,19 +11,19 @@ import (
 // Errors handles errors coming out of the call chain. It detects normal
 // application errors which are used to respond to the client in a uniform way.
 // Unexpected errors (status >= 500) are logged.
-func Errors(log *zap.SugaredLogger) web.Middleware {
+func Errors(log *zap.SugaredLogger) web2.Middleware {
 
 	// This is the actual middleware function to be executed.
-	m := func(handler web.Handler) web.Handler {
+	m := func(handler web2.Handler) web2.Handler {
 
 		// Create the handler that will be attached in the middleware chain.
 		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 
 			// If the context is missing this value, request the service
 			// to be shutdown gracefully.
-			v, err := web.GetValues(ctx)
+			v, err := web2.GetValues(ctx)
 			if err != nil {
-				return web.NewShutdownError("web value missing from context")
+				return web2.NewShutdownError("web value missing from context")
 			}
 
 			// Run the next handler and catch any propagated error.
@@ -58,13 +58,13 @@ func Errors(log *zap.SugaredLogger) web.Middleware {
 				}
 
 				// Respond with the error back to the client.
-				if err := web.Respond(ctx, w, er, status); err != nil {
+				if err := web2.Respond(ctx, w, er, status); err != nil {
 					return err
 				}
 
 				// If we receive the shutdown err we need to return it
 				// back to the base handler to shut down the service.
-				if web.IsShutdown(err) {
+				if web2.IsShutdown(err) {
 					return err
 				}
 			}

@@ -4,11 +4,11 @@ package user
 import (
 	"context"
 	"fmt"
-	"github.com/AgeroFlynn/crud/foundation/database"
 	"github.com/AgeroFlynn/crud/internal/buisness/core/dto"
 	"github.com/AgeroFlynn/crud/internal/buisness/repository/entity"
 	"github.com/AgeroFlynn/crud/internal/buisness/sys/auth"
 	"github.com/AgeroFlynn/crud/internal/buisness/sys/validate"
+	"github.com/AgeroFlynn/crud/internal/foundation/database"
 	"github.com/go-pg/pg/v10"
 	"github.com/golang-jwt/jwt/v4"
 	"go.uber.org/zap"
@@ -32,11 +32,6 @@ func NewStore(log *zap.SugaredLogger, db *pg.DB) Store {
 
 // Create inserts a new user into the database.
 func (s Store) Create(ctx context.Context, nu dto.NewUser, now time.Time) (dto.User, error) {
-	//TODO Validate should be int the transport layer
-	//if err := validate.Check(nu); err != nil {
-	//	return dto.User{}, fmt.Errorf("validating data: %w", err)
-	//}
-
 	hash, err := bcrypt.GenerateFromPassword([]byte(nu.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return dto.User{}, fmt.Errorf("generating password hash: %w", err)
@@ -62,14 +57,6 @@ func (s Store) Create(ctx context.Context, nu dto.NewUser, now time.Time) (dto.U
 
 // Update replaces a user document in the database.
 func (s Store) Update(ctx context.Context, claims auth.Claims, userID string, uu dto.UpdateUser, now time.Time) error {
-	//TODO Validate should be int the transport layer
-	//if err := validate.CheckID(userID); err != nil {
-	//	return database.ErrInvalidID
-	//}
-	//if err := validate.Check(uu); err != nil {
-	//	return fmt.Errorf("validating data: %w", err)
-	//}
-
 	usr, err := s.FindByID(ctx, claims, userID)
 	if err != nil {
 		return fmt.Errorf("updating user userID[%s]: %w", userID, err)
@@ -102,11 +89,6 @@ func (s Store) Update(ctx context.Context, claims auth.Claims, userID string, uu
 
 // Delete removes a user from the database.
 func (s Store) Delete(ctx context.Context, claims auth.Claims, userID string) error {
-	//TODO Validate should be int the transport layer
-	//if err := validate.CheckID(userID); err != nil {
-	//	return database.ErrInvalidID
-	//}
-
 	// If you are not an admin and looking to delete someone other than yourself.
 	if !claims.Authorized(auth.RoleAdmin) && claims.Subject != userID {
 		return database.ErrForbidden
@@ -163,11 +145,6 @@ func (s Store) FindByID(ctx context.Context, claims auth.Claims, userID string) 
 
 // FindByEmail gets the specified user from the database by email.
 func (s Store) FindByEmail(ctx context.Context, claims auth.Claims, email string) (dto.User, error) {
-
-	// Add Email Validate function in validate
-	// if err := validate.Email(email); err != nil {
-	// 	return User{}, ErrInvalidEmail
-	// }
 
 	var usr entity.User
 	if err := s.db.Model(&usr).Where("email = ?", email).Limit(1).Select(); err != nil {

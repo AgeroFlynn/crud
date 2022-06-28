@@ -2,7 +2,7 @@ package mid
 
 import (
 	"context"
-	"github.com/AgeroFlynn/crud/foundation/web"
+	web2 "github.com/AgeroFlynn/crud/internal/foundation/web"
 	"go.uber.org/zap"
 	"net/http"
 	"time"
@@ -10,17 +10,17 @@ import (
 
 // Logger writes some information about the request to the logs in the
 // format: TraceID : (200) GET /foo -> IP ADDR (latency)
-func Logger(log *zap.SugaredLogger) web.Middleware {
+func Logger(log *zap.SugaredLogger) web2.Middleware {
 
 	// This is the actual middleware function to be executed.
-	m := func(handler web.Handler) web.Handler {
+	m := func(handler web2.Handler) web2.Handler {
 
 		// Create the handler that will be attached in the middleware chain.
 		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 
 			// If the context is missing this value, request the service
 			// to be shutdown gracefully.
-			v, err := web.GetValues(ctx)
+			v, err := web2.GetValues(ctx)
 			if err != nil {
 				return err // web.NewShutdownError("web value missing from context")
 			}

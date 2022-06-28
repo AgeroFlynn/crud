@@ -4,13 +4,14 @@ package config
 import (
 	"errors"
 	"fmt"
-	"github.com/AgeroFlynn/crud/foundation/yaml"
+	"github.com/AgeroFlynn/crud/internal/foundation/yaml"
 	"github.com/ardanlabs/conf/v3"
 	"os"
 	"time"
 )
 
 type Config struct {
+	conf.Args
 	conf.Version
 	Web struct {
 		ReadTimeout     time.Duration `conf:"default:5s" yaml:"readTimeout"`
@@ -28,7 +29,9 @@ type Config struct {
 		User        string `conf:"default:postgres"`
 		Password    string `conf:"default:postgres,mask"`
 		Host        string `conf:"default:localhost"`
+		Port        string `conf:"default:5432"`
 		Name        string `conf:"default:postgres"`
+		PoolSize    int    `conf:"default:50"`
 		MaxIdleCons int    `conf:"default:0" yaml:"maxIdleCons"`
 		MaxOpenCons int    `conf:"default:0" yaml:"maxOpenCons"`
 		DisableTLS  bool   `conf:"default:true"`

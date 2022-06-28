@@ -1,18 +1,20 @@
 CREATE extension IF NOT EXISTS "uuid-ossp";
 
-CREATE TABLE users (
+SET bytea_output = 'escape';
+
+CREATE TABLE IF NOT EXISTS users (
                        user_id       UUID DEFAULT uuid_generate_v4 (),
                        name          TEXT,
                        email         TEXT UNIQUE,
                        roles         TEXT[],
-                       password_hash TEXT,
+                       password_hash bytea,
                        date_created  TIMESTAMP,
                        date_updated  TIMESTAMP,
 
                        PRIMARY KEY (user_id)
 );
 
-CREATE TABLE phone_dict (
+CREATE TABLE IF NOT EXISTS phone_dict (
                           phone_dict_id   UUID DEFAULT uuid_generate_v4 (),
                           telegram         TEXT,
                           user_id      UUID,

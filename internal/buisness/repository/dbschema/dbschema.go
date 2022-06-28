@@ -5,7 +5,7 @@ import (
 	"context"
 	_ "embed"
 	"fmt"
-	"github.com/AgeroFlynn/crud/foundation/database"
+	"github.com/AgeroFlynn/crud/internal/foundation/database"
 	"github.com/go-pg/pg/v10"
 )
 

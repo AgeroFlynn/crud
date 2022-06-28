@@ -3,17 +3,17 @@ package mid
 import (
 	"context"
 	"fmt"
-	"github.com/AgeroFlynn/crud/foundation/web"
+	web2 "github.com/AgeroFlynn/crud/internal/foundation/web"
 	"net/http"
 	"runtime/debug"
 )
 
 // Panics recovers from panics and converts the panic to an error so it is
 // reported in Metrics and handled in Errors.
-func Panics() web.Middleware {
+func Panics() web2.Middleware {
 
 	// This is the actual middleware function to be executed.
-	m := func(handler web.Handler) web.Handler {
+	m := func(handler web2.Handler) web2.Handler {
 
 		// Create the handler that will be attached in the middleware chain.
 		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) (err error) {

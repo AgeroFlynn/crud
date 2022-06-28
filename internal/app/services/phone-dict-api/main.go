@@ -4,10 +4,13 @@ import (
 	"context"
 	"expvar"
 	"fmt"
-	"github.com/AgeroFlynn/crud/foundation/config"
-	"github.com/AgeroFlynn/crud/foundation/logger"
+	"github.com/AgeroFlynn/crud/internal/buisness/sys/auth"
+	"github.com/AgeroFlynn/crud/internal/foundation/config"
+	"github.com/AgeroFlynn/crud/internal/foundation/keystore"
+	"github.com/AgeroFlynn/crud/internal/foundation/logger"
 	"github.com/AgeroFlynn/crud/internal/transport/rest/handlers"
 	"github.com/ardanlabs/conf/v3"
+	"github.com/go-pg/pg/v10"
 	_ "go.uber.org/automaxprocs"
 	"go.uber.org/automaxprocs/maxprocs"
 	"go.uber.org/zap"
@@ -73,6 +76,45 @@ func run(log *zap.SugaredLogger) error {
 	log.Infow("startup", "config", out)
 
 	// =========================================================================
+	// Initialize authentication support
+
+	log.Infow("startup", "status", "initializing authentication support")
+
+	// Construct a key store based on the key files stored in
+	// the specified directory.
+	ks, err := keystore.NewFS(os.DirFS(cfg.Auth.KeysFolder))
+	if err != nil {
+		return fmt.Errorf("reading keys: %w", err)
+	}
+
+	auth, err := auth.New(cfg.Auth.ActiveKID, ks)
+	if err != nil {
+		return fmt.Errorf("constructing auth: %w", err)
+	}
+
+	// =========================================================================
+	// Database Support
+
+	// Create connectivity to the database.
+	log.Infow("startup", "status", "initializing database support", "host", cfg.DB.Host)
+
+	db := pg.Connect(&pg.Options{
+		User:     cfg.DB.User,
+		Password: cfg.DB.Password,
+		Addr:     cfg.DB.Host + ":" + cfg.DB.Port,
+		Database: cfg.DB.Name,
+		PoolSize: cfg.DB.PoolSize,
+	})
+
+	if err != nil {
+		return fmt.Errorf("connecting to db: %w", err)
+	}
+	defer func() {
+		log.Infow("shutdown", "status", "stopping database support", "host", cfg.DB.Host)
+		db.Close()
+	}()
+
+	// =========================================================================
 	// Start API Service
 
 	log.Infow("startup", "status", "initializing V1 API support")
@@ -86,6 +128,8 @@ func run(log *zap.SugaredLogger) error {
 	apiMux := handlers.APIMux(handlers.APIMuxConfig{
 		Shutdown: shutdown,
 		Log:      log,
+		DB:       db,
+		Auth:     auth,
 	})
 
 	// Construct a server to service the requests against the mux.

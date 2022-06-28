@@ -3,11 +3,11 @@ package user_test
 import (
 	"context"
 	"errors"
-	"github.com/AgeroFlynn/crud/foundation/database"
 	"github.com/AgeroFlynn/crud/internal/buisness/core/dto"
-	"github.com/AgeroFlynn/crud/internal/buisness/repository/tests"
-	"github.com/AgeroFlynn/crud/internal/buisness/repository/user"
+	"github.com/AgeroFlynn/crud/internal/buisness/repository/store/user"
 	"github.com/AgeroFlynn/crud/internal/buisness/sys/auth"
+	"github.com/AgeroFlynn/crud/internal/buisness/sys/tests"
+	"github.com/AgeroFlynn/crud/internal/foundation/database"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/go-cmp/cmp"
@@ -43,11 +43,11 @@ func TestUser(t *testing.T) {
 			now := time.Date(2018, time.October, 1, 0, 0, 0, 0, time.UTC)
 
 			nu := dto.NewUser{
-				Name:            "Bill Kennedy",
-				Email:           "bill@ardanlabs.com",
+				Name:            "Agero Flynn",
+				Email:           "ageroflynn@gmail.com",
 				Roles:           []string{auth.RoleAdmin},
-				Password:        "gophers",
-				PasswordConfirm: "gophers",
+				Password:        "passw0rd",
+				PasswordConfirm: "passw0rd",
 			}
 
 			usr, err := store.Create(ctx, nu, now)
@@ -78,8 +78,8 @@ func TestUser(t *testing.T) {
 			t.Logf("\t%s\tTest %d:\tShould get back the same user.", tests.Success, testID)
 
 			upd := dto.UpdateUser{
-				Name:  tests.StringPointer("Jacob Walker"),
-				Email: tests.StringPointer("jacob@ardanlabs.com"),
+				Name:  tests.StringPointer("Updated User"),
+				Email: tests.StringPointer("updateduser@google.com"),
 			}
 
 			claims = auth.Claims{

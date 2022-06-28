@@ -51,6 +51,15 @@ func ToDTOUserSlice(users []User) []dto.User {
 	return dtoUsers
 }
 
+func FromDTOUserSlice(users []dto.User) []User {
+	var incomingUsers []User
+
+	for _, user := range users {
+		incomingUsers = append(incomingUsers, FromDTOUser(user))
+	}
+	return incomingUsers
+}
+
 // NewUser contains information needed to create a new User.
 type NewUser struct {
 	Name            string   `json:"name" validate:"required"`

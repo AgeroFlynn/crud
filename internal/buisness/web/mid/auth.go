@@ -4,18 +4,18 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/AgeroFlynn/crud/foundation/web"
 	"github.com/AgeroFlynn/crud/internal/buisness/sys/auth"
 	"github.com/AgeroFlynn/crud/internal/buisness/sys/validate"
+	web2 "github.com/AgeroFlynn/crud/internal/foundation/web"
 	"net/http"
 	"strings"
 )
 
 // Authenticate validates a JWT from the `Authorization` header.
-func Authenticate(a *auth.Auth) web.Middleware {
+func Authenticate(a *auth.Auth) web2.Middleware {
 
 	// This is the actual middleware function to be executed.
-	m := func(handler web.Handler) web.Handler {
+	m := func(handler web2.Handler) web2.Handler {
 
 		// Create the handler that will be attached in the middleware chain.
 		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
@@ -51,10 +51,10 @@ func Authenticate(a *auth.Auth) web.Middleware {
 
 // Authorize validates that an authenticated user has at least one role from a
 // specified list. This method constructs the actual function that is used.
-func Authorize(roles ...string) web.Middleware {
+func Authorize(roles ...string) web2.Middleware {
 
 	// This is the actual middleware function to be executed.
-	m := func(handler web.Handler) web.Handler {
+	m := func(handler web2.Handler) web2.Handler {
 
 		// Create the handler that will be attached in the middleware chain.
 		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {

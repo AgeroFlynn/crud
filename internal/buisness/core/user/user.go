@@ -7,7 +7,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/AgeroFlynn/crud/internal/buisness/core/dto"
-	"github.com/AgeroFlynn/crud/internal/buisness/repository/user"
+	"github.com/AgeroFlynn/crud/internal/buisness/repository/store/user"
 	"github.com/AgeroFlynn/crud/internal/buisness/sys/auth"
 	"github.com/go-pg/pg/v10"
 	"go.uber.org/zap"

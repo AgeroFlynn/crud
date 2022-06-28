@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"github.com/AgeroFlynn/crud/foundation/web"
 	userCore "github.com/AgeroFlynn/crud/internal/buisness/core/user"
 	"github.com/AgeroFlynn/crud/internal/buisness/sys/auth"
 	"github.com/AgeroFlynn/crud/internal/buisness/web/mid"
+	"github.com/AgeroFlynn/crud/internal/foundation/web"
 	"github.com/AgeroFlynn/crud/internal/transport/rest/handlers/v1/testgrp"
 	"github.com/AgeroFlynn/crud/internal/transport/rest/handlers/v1/usergrp"
 	"github.com/go-pg/pg/v10"
@@ -54,9 +54,9 @@ func v1(app *web.App, cfg APIMuxConfig) {
 	}
 
 	app.Handle(http.MethodGet, version, "/users/token", ugh.Token)
-	app.Handle(http.MethodGet, version, "/users/:page/:rows", ugh.FindAll, mid.Authenticate(cfg.Auth), mid.Authorize(auth.RoleAdmin))
-	app.Handle(http.MethodGet, version, "/users/:id", ugh.QueryByID, mid.Authenticate(cfg.Auth))
+	app.Handle(http.MethodGet, version, "/users", ugh.FindAll, mid.Authenticate(cfg.Auth), mid.Authorize(auth.RoleAdmin))
+	app.Handle(http.MethodGet, version, "/users/{id}", ugh.FindByID, mid.Authenticate(cfg.Auth))
 	app.Handle(http.MethodPost, version, "/users", ugh.Create, mid.Authenticate(cfg.Auth), mid.Authorize(auth.RoleAdmin))
-	app.Handle(http.MethodPut, version, "/users/:id", ugh.Update, mid.Authenticate(cfg.Auth), mid.Authorize(auth.RoleAdmin))
-	app.Handle(http.MethodDelete, version, "/users/:id", ugh.Delete, mid.Authenticate(cfg.Auth), mid.Authorize(auth.RoleAdmin))
+	app.Handle(http.MethodPut, version, "/users/{id}", ugh.Update, mid.Authenticate(cfg.Auth), mid.Authorize(auth.RoleAdmin))
+	app.Handle(http.MethodDelete, version, "/users/{id}", ugh.Delete, mid.Authenticate(cfg.Auth), mid.Authorize(auth.RoleAdmin))
 }

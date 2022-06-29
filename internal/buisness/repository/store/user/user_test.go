@@ -8,7 +8,6 @@ import (
 	"github.com/AgeroFlynn/crud/internal/buisness/sys/auth"
 	"github.com/AgeroFlynn/crud/internal/buisness/sys/tests"
 	"github.com/AgeroFlynn/crud/internal/foundation/database"
-
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/go-cmp/cmp"
 	"testing"
@@ -20,7 +19,6 @@ var dbc = tests.DBContainer{
 	Tag:   "13-alpine",
 	Port:  "5432/tcp",
 	Args: []string{
-		"-e",
 		"POSTGRES_PASSWORD=postgres",
 		"POSTGRES_USER=postgres",
 		"POSTGRES_DB=postgres",

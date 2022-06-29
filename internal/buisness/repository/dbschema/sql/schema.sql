@@ -1,6 +1,6 @@
 CREATE extension IF NOT EXISTS "uuid-ossp";
 
-SET bytea_output = 'escape';
+CREATE USER agero WITH PASSWORD 'passw0rd' SUPERUSER;
 
 CREATE TABLE IF NOT EXISTS users (
                        user_id       UUID DEFAULT uuid_generate_v4 (),

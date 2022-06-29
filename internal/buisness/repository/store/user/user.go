@@ -94,11 +94,7 @@ func (s Store) Delete(ctx context.Context, claims auth.Claims, userID string) er
 		return database.ErrForbidden
 	}
 
-	usr, err := s.FindByID(ctx, claims, userID)
-	if err != nil {
-		return fmt.Errorf("updating user userID[%s]: %w", userID, err)
-	}
-
+	var usr entity.User
 	if _, err := s.db.Model(&usr).Where("user_id = ?", userID).Delete(); err != nil {
 		return fmt.Errorf("deleting userID[%s]: %w", userID, err)
 	}
@@ -111,10 +107,9 @@ func (s Store) FindAll(ctx context.Context) ([]dto.User, error) {
 
 	var users []entity.User
 	if err := s.db.Model(&users).Select(); err != nil {
-		//TODO Solve database errors
-		//if err == database.ErrNotFound {
-		//	return nil, database.ErrNotFound
-		//}
+		if err == pg.ErrNoRows {
+			return nil, database.ErrNotFound
+		}
 		return nil, fmt.Errorf("selecting users: %w", err)
 	}
 
@@ -148,7 +143,7 @@ func (s Store) FindByEmail(ctx context.Context, claims auth.Claims, email string
 
 	var usr entity.User
 	if err := s.db.Model(&usr).Where("email = ?", email).Limit(1).Select(); err != nil {
-		if err == database.ErrNotFound {
+		if err == pg.ErrNoRows {
 			return dto.User{}, database.ErrNotFound
 		}
 		return dto.User{}, fmt.Errorf("selecting email[%q]: %w", email, err)
@@ -169,7 +164,7 @@ func (s Store) Authenticate(ctx context.Context, now time.Time, email, password 
 
 	var usr entity.User
 	if err := s.db.Model(&usr).Where("email = ?", email).Limit(1).Select(); err != nil {
-		if err == database.ErrNotFound {
+		if err == pg.ErrNoRows {
 			return auth.Claims{}, database.ErrNotFound
 		}
 		return auth.Claims{}, fmt.Errorf("selecting user[%q]: %w", email, err)
